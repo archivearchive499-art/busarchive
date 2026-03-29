@@ -11,35 +11,35 @@
 <img id="foto" width="400">
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", async () => {
 
   const id = window.location.pathname.replace("/", "");
 
-  if (!id) {
-    document.body.innerHTML = "<h1>Post bulunamadı</h1>";
-    return;
+  try {
+    const res = await fetch("https://script.google.com/macros/s/AKfycbwBlBhvhTGCtv5ak87myI8qICgwPqYebfz4WukjbEGCqxAKe4hFL8aNp4dRgcknGgEp/exec");
+    const data = await res.json();
+
+    const post = data[id];
+
+    console.log("ID:", id);
+    console.log("DATA:", data);
+    console.log("POST:", post);
+
+    if (!post) {
+      document.body.innerHTML = "<h1>Post bulunamadı</h1>";
+      return;
+    }
+
+    document.getElementById("title").innerText = post.aracKodu;
+    document.getElementById("hat").innerText = post.hatKodu;
+    document.getElementById("tarih").innerText = post.cekimTarihi;
+    document.getElementById("foto").src = post.foto.replace("open?id=", "uc?id=");
+    document.getElementById("user").innerText = post.hesapAdi;
+
+  } catch (err) {
+    console.error(err);
+    document.body.innerHTML = "<h1>API Hatası</h1>";
   }
-
-  fetch("https://script.google.com/macros/s/AKfycbwBlBhvhTGCtv5ak87myI8qICgwPqYebfz4WukjbEGCqxAKe4hFL8aNp4dRgcknGgEp/exec")
-    .then(res => res.json())
-    .then(data => {
-
-      const post = data[id];
-
-      if (!post) {
-        document.body.innerHTML = "<h1>Post bulunamadı</h1>";
-        return;
-      }
-
-      document.getElementById("arac").innerText = post.aracKodu;
-      document.getElementById("hat").innerText = "Hat: " + post.hatKodu;
-      document.getElementById("tarih").innerText = "Çekim: " + post.cekimTarihi;
-      document.getElementById("kullanici").innerText = "Yükleyen: " + post.cekimci;
-
-      const foto = post.foto?.replace("open?id=", "uc?id=");
-      document.getElementById("foto").src = foto;
-
-    });
 
 });
 </script>
