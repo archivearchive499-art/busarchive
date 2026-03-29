@@ -1,0 +1,4 @@
+[[redirects]]
+from = "/:id"
+to = "/post.html?id=:id"
+status = 200

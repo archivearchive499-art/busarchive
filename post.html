@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Post Detay</title>
+</head>
+<body>
+
+<h1 id="title"></h1>
+<p id="hat"></p>
+<p id="tarih"></p>
+<img id="foto" width="400">
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+  // URL'den ID al
+  const params = new URLSearchParams(window.location.search);
+  const id = params.get("id");
+
+  if (!id) {
+    document.body.innerHTML = "<h1>Post bulunamadı</h1>";
+    return;
+  }
+
+  // API'den veri çek
+  fetch("https://script.google.com/macros/s/AKfycbztrPOrixjvwgCsuoST-zB58mtUJdE3Ve1BXRfsHOjt5q9pqS6jVmzcGUSac52NwQEtIw/exec")
+    .then(res => res.json())
+    .then(data => {
+
+      const post = data[id];
+
+      if (!post) {
+        document.body.innerHTML = "<h1>Post bulunamadı</h1>";
+        return;
+      }
+
+      document.getElementById("title").innerText = post.aracKodu;
+      document.getElementById("hat").innerText = post.hatKodu;
+      document.getElementById("tarih").innerText = post.cekimTarihi;
+
+      const fotoLink = post.foto?.replace("open?id=", "uc?id=");
+      document.getElementById("foto").src = fotoLink;
+
+    })
+    .catch(err => {
+      console.error(err);
+      document.body.innerHTML = "<h1>Veri yüklenemedi</h1>";
+    });
+
+});
+</script>
+
+</body>
+</html>
