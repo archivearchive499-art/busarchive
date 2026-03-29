@@ -1,29 +1,18 @@
-<!DOCTYPE html>
-<html>
-<head>
-  <title>Post</title>
-</head>
-<body>
-
-<h1 id="title">Loading...</h1>
-<p id="hat"></p>
-<p id="tarih"></p>
-<p id="user"></p>
-<img id="foto" width="400">
-
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
 
-  // /7415692296 → 7415692296
   const id = window.location.pathname.replace("/", "");
+
+  console.log("URL ID:", id);
 
   try {
     const res = await fetch("https://script.google.com/macros/s/AKfycbwBlBhvhTGCtv5ak87myI8qICgwPqYebfz4WukjbEGCqxAKe4hFL8aNp4dRgcknGgEp/exec");
     const data = await res.json();
 
+    console.log("API DATA:", data);
+
     const post = data[id];
 
-    console.log("ID:", id);
     console.log("POST:", post);
 
     if (!post) {
@@ -39,13 +28,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("foto").src =
       post.foto.replace("open?id=", "uc?id=");
 
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    console.error(err);
     document.body.innerHTML = "<h1>API Hatası</h1>";
   }
 
 });
 </script>
-
-</body>
-</html>
