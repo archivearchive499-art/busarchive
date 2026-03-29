@@ -1,37 +1,36 @@
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
 
-  const id = window.location.pathname.replace("/", "");
+  // 🔥 temiz ID alma (EN KRİTİK FIX)
+  let id = window.location.pathname;
+  id = id.replace("/", "").replace("/", "");
 
-  console.log("URL ID:", id);
+  console.log("CLEAN ID:", id);
 
-  try {
-    const res = await fetch("https://script.google.com/macros/s/AKfycbwBlBhvhTGCtv5ak87myI8qICgwPqYebfz4WukjbEGCqxAKe4hFL8aNp4dRgcknGgEp/exec");
-    const data = await res.json();
+  const res = await fetch("https://script.google.com/macros/s/AKfycbwBlBhvhTGCtv5ak87myI8qICgwPqYebfz4WukjbEGCqxAKe4hFL8aNp4dRgcknGgEp/exec");
+  const data = await res.json();
 
-    console.log("API DATA:", data);
+  console.log("DATA KEYS:", Object.keys(data));
 
-    const post = data[id];
+  const post = data[id];
 
-    console.log("POST:", post);
+  console.log("POST:", post);
 
-    if (!post) {
-      document.body.innerHTML = "<h1>Post bulunamadı</h1>";
-      return;
-    }
-
-    document.getElementById("title").innerText = post.aracKodu;
-    document.getElementById("hat").innerText = post.hatKodu;
-    document.getElementById("tarih").innerText = post.cekimTarihi;
-    document.getElementById("user").innerText = post.hesapAdi;
-
-    document.getElementById("foto").src =
-      post.foto.replace("open?id=", "uc?id=");
-
-  } catch (err) {
-    console.error(err);
-    document.body.innerHTML = "<h1>API Hatası</h1>";
+  if (!post) {
+    document.body.innerHTML = `
+      <h1>Post bulunamadı</h1>
+      <p>ID: ${id}</p>
+    `;
+    return;
   }
+
+  document.getElementById("title").innerText = post.aracKodu;
+  document.getElementById("hat").innerText = post.hatKodu;
+  document.getElementById("tarih").innerText = post.cekimTarihi;
+  document.getElementById("user").innerText = post.hesapAdi;
+
+  document.getElementById("foto").src =
+    post.foto.replace("open?id=", "uc?id=");
 
 });
 </script>
