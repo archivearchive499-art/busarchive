@@ -87,11 +87,15 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("tarih").innerText = post.cekimTarihi || "-";
     document.getElementById("user").innerText = post.hesapAdi || "-";
 
-    let foto = post.foto || "";
+    let foto = post.foto;
 
-    if (foto.includes("open?id=")) {
-      foto = foto.replace("open?id=", "uc?id=");
-    }
+    if (foto.includes("drive.google.com")) {
+    const fileId = foto.match(/[-\w]{25,}/);
+
+    if (fileId) {
+      foto = `https://drive.google.com/uc?export=view&id=${fileId[0]}`;
+  }
+}
 
     document.getElementById("foto").src = foto;
 
