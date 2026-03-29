@@ -1,36 +1,107 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Post Detay</title>
+
+  <style>
+    body {
+      font-family: Arial;
+      margin: 20px;
+      background: #f5f5f5;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: auto;
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+    }
+
+    img {
+      width: 100%;
+      border-radius: 10px;
+      margin-top: 10px;
+    }
+
+    .label {
+      font-weight: bold;
+      margin-top: 10px;
+      display: block;
+    }
+
+    h1 {
+      font-size: 22px;
+    }
+  </style>
+</head>
+
+<body>
+
+<div class="container">
+
+  <h1 id="title">Yükleniyor...</h1>
+
+  <span class="label">Hat Kodu</span>
+  <p id="hat"></p>
+
+  <span class="label">Çekim Tarihi</span>
+  <p id="tarih"></p>
+
+  <span class="label">Kullanıcı</span>
+  <p id="user"></p>
+
+  <span class="label">Fotoğraf</span>
+  <img id="foto">
+
+  <p id="error" style="color:red;"></p>
+
+</div>
+
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
 
-  // 🔥 temiz ID alma (EN KRİTİK FIX)
-  let id = window.location.pathname;
-  id = id.replace("/", "").replace("/", "");
+  // 🔥 ID alma (Netlify uyumlu)
+  let id = window.location.pathname.split("/").filter(Boolean)[0];
 
-  console.log("CLEAN ID:", id);
+  console.log("ID:", id);
 
-  const res = await fetch("https://script.google.com/macros/s/AKfycbw9AnPPPm3YG445yonndwMavmzl2yiGV3MJu6-ypvyCw3MACTkLo9Ipfij2Pzp9AXt03A/exec");
-  const data = await res.json();
+  try {
+    const res = await fetch("https://script.google.com/macros/s/AKfycbw9AnPPPm3YG445yonndwMavmzl2yiGV3MJu6-ypvyCw3MACTkLo9Ipfij2Pzp9AXt03A/exec");
 
-  console.log("DATA KEYS:", Object.keys(data));
+    const text = await res.text();
+    const data = JSON.parse(text);
 
-  const post = data[id];
+    console.log("DATA:", data);
 
-  console.log("POST:", post);
+    const post = data[id];
 
-  if (!post) {
-    document.body.innerHTML = `
-      <h1>Post bulunamadı</h1>
-      <p>ID: ${id}</p>
-    `;
-    return;
+    if (!post) {
+      document.getElementById("error").innerText = "Post bulunamadı: " + id;
+      return;
+    }
+
+    document.getElementById("title").innerText = post.aracKodu || "-";
+    document.getElementById("hat").innerText = post.hatKodu || "-";
+    document.getElementById("tarih").innerText = post.cekimTarihi || "-";
+    document.getElementById("user").innerText = post.hesapAdi || "-";
+
+    let foto = post.foto || "";
+
+    if (foto.includes("open?id=")) {
+      foto = foto.replace("open?id=", "uc?id=");
+    }
+
+    document.getElementById("foto").src = foto;
+
+  } catch (err) {
+    console.error(err);
+    document.getElementById("error").innerText = "API hatası oluştu";
   }
-
-  document.getElementById("title").innerText = post.aracKodu;
-  document.getElementById("hat").innerText = post.hatKodu;
-  document.getElementById("tarih").innerText = post.cekimTarihi;
-  document.getElementById("user").innerText = post.hesapAdi;
-
-  document.getElementById("foto").src =
-    post.foto.replace("open?id=", "uc?id=");
 
 });
 </script>
+
+</body>
+</html>
