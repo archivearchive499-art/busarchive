@@ -1,18 +1,20 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Post Detay</title>
+  <title>Post</title>
 </head>
 <body>
 
-<h1 id="title"></h1>
+<h1 id="title">Loading...</h1>
 <p id="hat"></p>
 <p id="tarih"></p>
+<p id="user"></p>
 <img id="foto" width="400">
 
 <script>
 document.addEventListener("DOMContentLoaded", async () => {
 
+  // /7415692296 → 7415692296
   const id = window.location.pathname.replace("/", "");
 
   try {
@@ -22,7 +24,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const post = data[id];
 
     console.log("ID:", id);
-    console.log("DATA:", data);
     console.log("POST:", post);
 
     if (!post) {
@@ -33,11 +34,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     document.getElementById("title").innerText = post.aracKodu;
     document.getElementById("hat").innerText = post.hatKodu;
     document.getElementById("tarih").innerText = post.cekimTarihi;
-    document.getElementById("foto").src = post.foto.replace("open?id=", "uc?id=");
     document.getElementById("user").innerText = post.hesapAdi;
 
-  } catch (err) {
-    console.error(err);
+    document.getElementById("foto").src =
+      post.foto.replace("open?id=", "uc?id=");
+
+  } catch (e) {
+    console.error(e);
     document.body.innerHTML = "<h1>API Hatası</h1>";
   }
 
